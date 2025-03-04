@@ -1,0 +1,6 @@
+streamlit
+     trafilatura
+     nltk
+     beautifulsoup4
+     pandas
+     requests
