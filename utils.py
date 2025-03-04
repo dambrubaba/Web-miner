@@ -1,8 +1,8 @@
 import re
 import json
-from typing import Dict, List
 import nltk
 from nltk.tokenize import sent_tokenize
+from typing import Dict, List
 
 # Download required NLTK data
 try:
@@ -25,10 +25,15 @@ def structure_text_content(text: str) -> Dict:
     """Convert extracted text into structured format."""
     if not text:
         return {"error": "No content found"}
-    
+
     # Split into sentences
-    sentences = sent_tokenize(text)
-    
+    try:
+        sentences = sent_tokenize(text)
+    except LookupError:
+        # If tokenization fails, try downloading again and retry
+        nltk.download('punkt')
+        sentences = sent_tokenize(text)
+
     # Create structured format
     structured_data = {
         "document": {
@@ -41,7 +46,7 @@ def structure_text_content(text: str) -> Dict:
             }
         }
     }
-    
+
     return structured_data
 
 def format_json_for_display(data: Dict) -> str:
