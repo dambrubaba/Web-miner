@@ -1,14 +1,30 @@
 import re
 import json
 import nltk
-from nltk.tokenize import sent_tokenize
 from typing import Dict, List
+from nltk.tokenize import sent_tokenize
 
-# Download required NLTK data
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+# Initialize NLTK at module level
+def initialize_nltk():
+    """Initialize NLTK and download required data."""
+    try:
+        # Try to find the tokenizer data
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        try:
+            # Download the tokenizer data
+            nltk.download('punkt', quiet=True)
+        except Exception as e:
+            print(f"Failed to download NLTK data: {str(e)}")
+
+# Call initialization when module is loaded
+initialize_nltk()
+
+def simple_sentence_tokenize(text: str) -> List[str]:
+    """Fallback sentence tokenizer using simple rules."""
+    # Split on common sentence endings
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    return [s.strip() for s in sentences if s.strip()]
 
 def validate_url(url: str) -> bool:
     """Validate if the input string is a valid URL."""
@@ -26,13 +42,12 @@ def structure_text_content(text: str) -> Dict:
     if not text:
         return {"error": "No content found"}
 
-    # Split into sentences
+    # Split into sentences with fallback
     try:
         sentences = sent_tokenize(text)
-    except LookupError:
-        # If tokenization fails, try downloading again and retry
-        nltk.download('punkt')
-        sentences = sent_tokenize(text)
+    except Exception as e:
+        print(f"NLTK tokenization failed: {str(e)}, using fallback tokenizer")
+        sentences = simple_sentence_tokenize(text)
 
     # Create structured format
     structured_data = {
