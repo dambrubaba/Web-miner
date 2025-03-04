@@ -74,11 +74,15 @@ The application outputs structured data in the following format:
 
 ## Deployment
 
-This application is designed to be deployed on Replit:
+This application can be deployed on various platforms. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to:
 
-1. Access your Replit workspace
-2. Click the "Deploy" button
-3. Your app will be available at your assigned `.replit.app` domain
+- Streamlit Cloud (Recommended)
+- Heroku
+- Google Cloud Run
+- AWS Elastic Beanstalk
+- DigitalOcean App Platform
+
+For the simplest deployment experience, we recommend using either Replit or Streamlit Cloud.
 
 ## Contributing
 
