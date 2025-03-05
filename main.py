@@ -1,9 +1,18 @@
 import streamlit as st
 import json
 import pandas as pd
+import os
 from crawler import WebCrawler
 from utils import validate_url, structure_text_content, format_json_for_display
 from styles import apply_custom_styles
+
+# Log the port being used (with better error handling)
+try:
+    port = int(os.environ.get("PORT", 8501))
+    print(f"Streamlit is configured to run on port: {port}")
+except Exception as e:
+    print(f"Error configuring port: {str(e)}, using default port 8501")
+    port = 8501
 
 # Page configuration must be the first Streamlit command
 st.set_page_config(

@@ -8,14 +8,10 @@ from nltk.tokenize import sent_tokenize
 def initialize_nltk():
     """Initialize NLTK and download required data."""
     try:
-        # Try to find the tokenizer data
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        try:
-            # Download the tokenizer data
-            nltk.download('punkt', quiet=True)
-        except Exception as e:
-            print(f"Failed to download NLTK data: {str(e)}")
+        # Force download of punkt data
+        nltk.download('punkt', quiet=True)
+    except Exception as e:
+        print(f"Failed to download NLTK data: {str(e)}")
 
 # Call initialization when module is loaded
 initialize_nltk()

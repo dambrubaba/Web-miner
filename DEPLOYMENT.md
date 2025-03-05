@@ -1,59 +1,105 @@
 # Deployment Options for Web Crawler Application
 
-## 1. Streamlit Cloud (Recommended Alternative)
-- **Why**: Native support for Streamlit apps, easiest transition
-- **Steps**:
-  1. Create account on share.streamlit.io
-  2. Connect your GitHub repository
-  3. Add requirements.txt:
-     ```
-     streamlit
-     trafilatura
-     nltk
-     beautifulsoup4
-     pandas
-     requests
-     ```
-  4. Deploy directly from GitHub
+# Streamlit Cloud Deployment Guide
+
+## Quick Setup
+
+1. Create a GitHub repository and push your code including:
+   ```
+   main.py
+   utils.py
+   crawler.py
+   styles.py
+   .streamlit/config.toml
+   packages.txt
+   requirements.txt
+   ```
+
+2. Visit [Streamlit Cloud](https://share.streamlit.io) and:
+   - Sign in with GitHub
+   - Click "New app"
+   - Select your repository
+   - Select main.py as the main file
+   - Deploy
+
+## Configuration Files
+
+### .streamlit/config.toml
+```toml
+[server]
+address = "0.0.0.0"
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+
+[theme]
+primaryColor = "#3182CE"
+backgroundColor = "#F7FAFC"
+secondaryBackgroundColor = "#4A5568"
+textColor = "#1A202C"
+font = "sans serif"
+```
+
+### packages.txt
+```
+python3-dev
+build-essential
+```
+
+## Troubleshooting
+
+If you encounter deployment issues:
+
+1. Check the deployment logs in Streamlit Cloud dashboard
+2. Verify that NLTK data is being downloaded correctly
+3. Ensure all dependencies are properly listed in requirements.txt
+4. The app will automatically use the port provided by Streamlit Cloud
+
+## Health Checks
+
+Streamlit Cloud performs health checks automatically. The configuration ensures:
+- The app binds to the correct address (0.0.0.0)
+- Uses the port provided by Streamlit Cloud
+- CORS and XSRF protection are properly configured
 
 ## 2. Heroku
 - **Required Changes**:
   1. Add `Procfile`:
-     ```
-     web: streamlit run main.py
-     ```
+    ```
+    web: streamlit run main.py
+    ```
   2. Add `runtime.txt`:
-     ```
-     python-3.11.x
-     ```
+    ```
+    python-3.11.x
+    ```
   3. Configure `PORT` environment variable in Heroku dashboard
   4. Add NLTK data download to startup
 
 ## 3. Google Cloud Run
 - **Required Changes**:
   1. Create `Dockerfile`:
-     ```dockerfile
-     FROM python:3.11-slim
-     
-     WORKDIR /app
-     COPY . .
-     RUN pip install -r requirements.txt
-     RUN python -c "import nltk; nltk.download('punkt')"
-     
-     EXPOSE 8080
-     CMD streamlit run --server.port 8080 --server.address 0.0.0.0 main.py
-     ```
+    ```dockerfile
+    FROM python:3.11-slim
+
+    WORKDIR /app
+    COPY . .
+    RUN pip install -r requirements.txt
+    RUN python -c "import nltk; nltk.download('punkt')"
+
+    EXPOSE 8080
+    CMD streamlit run --server.port 8080 --server.address 0.0.0.0 main.py
+    ```
   2. Enable Cloud Build API
   3. Deploy using Google Cloud Console or CLI
 
 ## 4. AWS Elastic Beanstalk
 - **Required Changes**:
   1. Create `.ebextensions/01_python.config`:
-     ```yaml
-     option_settings:
-       aws:elasticbeanstalk:container:python:
-         WSGIPath: main:app
-     ```
+    ```yaml
+    option_settings:
+      aws:elasticbeanstalk:container:python:
+        WSGIPath: main:app
+    ```
   2. Add `requirements.txt`
   3. Configure environment variables in EB Console
 
@@ -62,9 +108,9 @@
   1. Add `requirements.txt`
   2. Configure as a Python web service
   3. Set environment variables:
-     ```
-     PORT=8080
-     ```
+    ```
+    PORT=8080
+    ```
 
 ## Important Considerations
 
